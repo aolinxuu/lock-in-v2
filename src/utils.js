@@ -1,107 +1,135 @@
-import { PERCENTAGES, SVG_VIEWBOX, DEFAULT_RADIUS, DEFAULT_STROKE_WIDTH } from "./constants";
+import {
+  PERCENTAGES,
+  // SVG_VIEWBOX,
+  DEFAULT_RADIUS,
+  DEFAULT_STROKE_WIDTH,
+  CENTER_X,
+  CENTER_Y,
+  GAP,
+  SEGMENT_COLOR,
+} from "./constants";
 
-/**
- * Calculates the end point of an arc and the start point of the next segment
- * @param {number} startX - Starting X coordinate
- * @param {number} startY - Starting Y coordinate
- * @param {number} centerX - Center X coordinate of the circle
- * @param {number} centerY - Center Y coordinate of the circle
- * @param {number} radius - Radius of the circle
- * @param {number} percentage - Percentage of the circle for this arc (0-1)
- * @param {number} segmentGap - Gap between segments in degrees (default: 12)
- * @returns {Object} Object containing endX, endY, nextStartX, nextStartY coordinates
- */
-export function getArcEndPoint(startX, startY, centerX, centerY, radius, percentage, segmentGap = 12) {
-  const startAngle = Math.atan2(startY - centerY, startX - centerX);
-  // Convert gap from degrees to radians
-  const gapRadians = (segmentGap * Math.PI) / 180;
-  // Subtract gap from the arc length
+export const formatTime = (seconds) => {
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return `${mins}:${secs.toString().padStart(2, "0")}`;
+};
+
+// Helper function to create a full circle segment
+const createFullCircleSegment = (key) => (
+  <circle
+    key={key}
+    cx={CENTER_X}
+    cy={CENTER_Y}
+    r={DEFAULT_RADIUS}
+    fill="none"
+    stroke={SEGMENT_COLOR}
+    strokeWidth={DEFAULT_STROKE_WIDTH}
+    strokeLinecap="round"
+  />
+);
+
+// Helper function to create a partial circle segment
+const createPartialCircleSegment = (key, startX, startY, endX, endY, percentage) => (
+  <path
+    key={key}
+    d={`M ${startX} ${startY} A ${DEFAULT_RADIUS} ${DEFAULT_RADIUS} 0 ${percentage > 0.5 ? 1 : 0} 1 ${endX} ${endY}`}
+    fill="none"
+    stroke={SEGMENT_COLOR}
+    strokeWidth={DEFAULT_STROKE_WIDTH}
+    strokeLinecap="round"
+  />
+);
+
+// Main function to generate all segments
+export const createSegments = () => {
+  const segments = [];
+  let currentX = CENTER_X;
+  let currentY = CENTER_Y - DEFAULT_RADIUS;
+  const gapRadians = (GAP * Math.PI) / 180;
+
+  PERCENTAGES.forEach((percentage, index) => {
+    if (percentage <= 0) return;
+
+    const arcPoints = getArcPoints(currentX, currentY, DEFAULT_RADIUS, percentage, gapRadians);
+
+    const segment =
+      percentage === 1
+        ? createFullCircleSegment(index)
+        : createPartialCircleSegment(
+            index,
+            arcPoints.actualStartX,
+            arcPoints.actualStartY,
+            arcPoints.endX,
+            arcPoints.endY,
+            percentage
+          );
+
+    segments.push(segment);
+    currentX = arcPoints.nextStartX;
+    currentY = arcPoints.nextStartY;
+  });
+
+  return segments;
+};
+
+// Calculate all points needed for an arc segment
+export function getArcPoints(startX, startY, radius, percentage, gapRadians) {
+  const startAngle = Math.atan2(startY - CENTER_Y, startX - CENTER_X);
+  const adjustedStartAngle = startAngle + gapRadians;
   const angleDelta = 2 * Math.PI * percentage - gapRadians;
   const endAngle = startAngle + angleDelta;
 
-  const endX = centerX + radius * Math.cos(endAngle);
-  const endY = centerY + radius * Math.sin(endAngle);
+  const calculatePoint = (angle) => ({
+    x: CENTER_X + radius * Math.cos(angle),
+    y: CENTER_Y + radius * Math.sin(angle),
+  });
 
-  // Calculate where the next segment should start (including the gap)
-  const nextStartAngle = startAngle + 2 * Math.PI * percentage;
-  const nextStartX = centerX + radius * Math.cos(nextStartAngle);
-  const nextStartY = centerY + radius * Math.sin(nextStartAngle);
+  const endPoint = calculatePoint(endAngle);
+  const nextStartPoint = calculatePoint(startAngle + 2 * Math.PI * percentage);
+  const actualStartPoint = calculatePoint(adjustedStartAngle);
 
-  return { endX, endY, nextStartX, nextStartY };
+  return {
+    endX: endPoint.x,
+    endY: endPoint.y,
+    nextStartX: nextStartPoint.x,
+    nextStartY: nextStartPoint.y,
+    actualStartX: actualStartPoint.x,
+    actualStartY: actualStartPoint.y,
+  };
 }
 
-// export const createSegments = () => {
-//   const segments = [];
-//   const centerX = SVG_VIEWBOX.w / 2;
-//   const centerY = SVG_VIEWBOX.h / 2;
+// export const overlayProcess = () => {
+//   if (totalProgress <= 0) return null;
+//   // Start at top of circle
+//   const startX = CENTER_X;
+//   const startY = CENTER_Y - DEFAULT_RADIUS;
+//   console.log("dahs");
+//   console.log(totalProgress);
 
-//   // start at top of circle
-//   let currentX = centerX;
-//   let currentY = centerY - DEFAULT_RADIUS;
+//   const gapRadians = (GAP * Math.PI) / 180;
 
-//   PERCENTAGES.forEach((percentage, i) => {
-//     const { endX, endY, nextStartX, nextStartY } = getArcEndPoint(
-//       currentX,
-//       currentY,
-//       centerX,
-//       centerY,
-//       DEFAULT_RADIUS,
-//       percentage
-//     );
+//   const { endX, endY, nextStartX, nextStartY, actualStartX, actualStartY } = getArcPoints(
+//     startX,
+//     startY,
+//     DEFAULT_RADIUS,
+//     totalProgress,
+//     gapRadians
+//   );
 
-//     const largeArcFlag = percentage > 0.5 ? 1 : 0;
+//   const progressLargeArcFlag = totalProgress > 0.5 ? 1 : 0;
+//   // console.log("askhfdah");
+//   // console.log(startX, startY, progressLargeArcFlag, endX, endY);
 
-//     if (percentage === 1) {
-//       segments.push(
-//         <circle
-//           key={i}
-//           cx={centerX}
-//           cy={centerY}
-//           r={DEFAULT_RADIUS}
-//           fill="none"
-//           stroke={`url(#gradient-${i})`}
-//           strokeWidth={DEFAULT_STROKE_WIDTH}
-//           strokeLinecap="round"
-//         />
-//       );
-//     } else if (percentage > 0) {
-//       segments.push(
-//         <path
-//           key={i}
-//           d={`M ${currentX} ${currentY} A ${DEFAULT_RADIUS} ${DEFAULT_RADIUS} 0 ${largeArcFlag} 1 ${endX} ${endY}`}
-//           fill="none"
-//           stroke={`url(#gradient-${i})`}
-//           strokeWidth={DEFAULT_STROKE_WIDTH}
-//           strokeLinecap="round"
-//         />
-//       );
-//     }
-
-//     currentX = nextStartX;
-//     currentY = nextStartY;
-//   });
-//   return segments;
+//   return (
+//     <path
+//       key="progress-overlay"
+//       d={`M ${startX} ${startY} A ${DEFAULT_RADIUS} ${DEFAULT_RADIUS} 0 ${progressLargeArcFlag} 1 ${endX} ${endY}`}
+//       // d={`M ${50} ${20} A ${DEFAULT_RADIUS} ${DEFAULT_RADIUS} 0 ${progressLargeArcFlag} 1 ${endX} ${endY}`}
+//       fill="none"
+//       stroke="#F59E0B" // Orange color for progress
+//       strokeWidth={DEFAULT_STROKE_WIDTH}
+//       strokeLinecap="round"
+//     />
+//   );
 // };
-
-// // difference colors
-// // <defs>
-// //   {/* {colorPairs.map((colors, i) => ( */}
-// //   {/* <linearGradient key={i} id={`gradient-${i}`} gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="100" y2="0"> */}
-// //   <linearGradient id="constant-gradient" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="100" y2="0">
-// //     <stop offset="0%" stopColor="#93CDAC" />
-// //     <stop offset="100%" stopColor="#93CDAC" />
-// //   </linearGradient>
-// //   {/* ))} */}
-// // </defs>
-
-{
-  /* <div className="space-x-2">
-          <p className="mb-2">Current Segment: {currentSegment + 1}</p>
-          <button
-            onClick={() => setCurrentSegment((prev) => (prev + 1) % PERCENTAGES.length)}
-            className="px-30 py-50 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            Next Segment
-          </button>
-        </div> */
-}
