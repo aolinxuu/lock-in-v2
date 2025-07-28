@@ -12,4 +12,5 @@ export const BASE_COLOR = "#93CDAC";
 export const OVERLAY_COLOR = "#F59E0B";
 
 export const STROKE_WIDTH = 17;
-export const GAP_ANGLE = 15; // Reduced gap for better fit
+export const GAP_ANGLE = 15;
+export const SEGMENTS = SEGMENT_PROPORTIONS.length;

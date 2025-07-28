@@ -1,25 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 
-import {
-  SEGMENT_PROPORTIONS,
-  RADIUS,
-  STROKE_WIDTH,
-  GAP_ANGLE,
-  BASE_COLOR,
-  OVERLAY_COLOR,
-  SVG_VIEWBOX,
-} from "./constants";
-const SEGMENTS = SEGMENT_PROPORTIONS.length;
+import { SEGMENT_PROPORTIONS, RADIUS, STROKE_WIDTH, GAP_ANGLE, BASE_COLOR, OVERLAY_COLOR, SEGMENTS } from "./constants";
 
-const degToRad = (deg) => (deg * Math.PI) / 180;
-
-const polarToCartesian = (cx, cy, r, angleDeg) => {
-  const rad = degToRad(angleDeg);
-  return {
-    x: cx + r * Math.cos(rad),
-    y: cy + r * Math.sin(rad),
-  };
-};
+import { formatTime, polarToCartesian } from "./utils";
 
 const Segment = ({ startAngle, endAngle, progress, i }) => {
   const start = polarToCartesian(100, 100, RADIUS, startAngle);
@@ -92,13 +75,6 @@ export default function SegmentedTimer() {
     } else {
       return (totalProgress - segmentStart) / SEGMENT_PROPORTIONS[segmentIndex];
     }
-  };
-
-  // Format time display
-  const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
   // Timer logic
@@ -216,89 +192,3 @@ export default function SegmentedTimer() {
     </div>
   );
 }
-
-// import React, { useState, useEffect, useRef } from "react";
-// import {
-//   PERCENTAGES,
-//   SVG_VIEWBOX,
-//   DEFAULT_RADIUS,
-//   DEFAULT_STROKE_WIDTH,
-//   CENTER_X,
-//   CENTER_Y,
-//   GAP,
-//   SEGMENT_COLOR,
-// } from "./constants";
-// import { getArcPoints, createSegments, getProgressSegmentInfo } from "./utils";
-// import { formatTime } from "./math";
-
-// const SEGMENTS = 12;
-// const RADIUS = 90;
-// const STROKE_WIDTH = 12;
-
-// function App() {
-//   // const [currentSegment, setCurrentSegment] = useState(0);
-//   // const [isRunning, setIsRunning] = useState(false);
-//   // const [timeLeft, setTimeLeft] = useState(0);
-//   // const [totalProgress, setTotalProgress] = useState(0);
-
-//   const [totalProgress, setTotalProgress] = useState(0);
-
-//   const segments = createSegments();
-
-//   return (
-//     <div className="flex flex-col items-center justify-center min-h-screen">
-//       <svg viewBox={`${SVG_VIEWBOX.x} ${SVG_VIEWBOX.y} ${SVG_VIEWBOX.w} ${SVG_VIEWBOX.h}`} className="w-64 h-64">
-//         {segments}
-//       </svg>
-//       {/* Progress slider */}
-//       <div className="w-full max-w-md">
-//         <label className="block text-sm font-medium text-gray-700 mb-2">
-//           Total Progress: {Math.round(totalProgress * 100)}%
-//         </label>
-//         <input
-//           type="range"
-//           min="0"
-//           max="1"
-//           step="0.01"
-//           value={totalProgress}
-//           onChange={(e) => setTotalProgress(parseFloat(e.target.value))}
-//           className="w-full"
-//         />
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default App;
-
-// // const Segment = ({ startAngle, endAngle, progress, i }) => {
-// //   const start = polarToCartesian(100, 100, DEFAULT_RADIUS, startAngle);
-// //   const end = polarToCartesian(100, 100, DEFAULT_RADIUS, endAngle);
-// //   const largeArc = endAngle - startAngle > 180 ? 1 : 0;
-
-// //   // Calculate the partial end point based on progress
-// //   const actualEndAngle = startAngle + (endAngle - startAngle) * progress;
-// //   const actualEnd = polarToCartesian(100, 100, DEFAULT_RADIUS, actualEndAngle);
-// //   const actualLargeArc = actualEndAngle - startAngle > 180 ? 1 : 0;
-
-// //   return (
-// //     <g key={i}>
-// //       <path
-// //         d={`M ${start.x} ${start.y} A ${DEFAULT_RADIUS} ${DEFAULT_RADIUS} 0 ${largeArc} 1 ${end.x} ${end.y}`}
-// //         fill="none"
-// //         stroke="#e5e7eb"
-// //         strokeWidth={STROKE_WIDTH}
-// //         strokeLinecap="round"
-// //       />
-// //       {progress > 0 && (
-// //         <path
-// //           d={`M ${start.x} ${start.y} A ${DEFAULT_RADIUS} ${DEFAULT_RADIUS} 0 ${actualLargeArc} 1 ${actualEnd.x} ${actualEnd.y}`}
-// //           fill="none"
-// //           stroke="#3b82f6"
-// //           strokeWidth={STROKE_WIDTH}
-// //           strokeLinecap="round"
-// //         />
-// //       )}
-// //     </g>
-// //   );
-// // };
