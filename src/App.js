@@ -1,18 +1,27 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./App.css";
 
-import { SEGMENT_PROPORTIONS, RADIUS, STROKE_WIDTH, GAP_ANGLE, BASE_COLOR, OVERLAY_COLOR, SEGMENTS } from "./constants";
+import {
+  SEGMENT_PROPORTIONS,
+  RADIUS,
+  STROKE_WIDTH,
+  GAP_ANGLE,
+  BASE_COLOR,
+  OVERLAY_COLOR,
+  SEGMENTS,
+  SVG_VIEWBOX,
+} from "./constants";
 
 import { formatTime, polarToCartesian } from "./utils";
 
 const Segment = ({ startAngle, endAngle, progress, i }) => {
-  const start = polarToCartesian(100, 100, RADIUS, startAngle);
-  const end = polarToCartesian(100, 100, RADIUS, endAngle);
+  const start = polarToCartesian(SVG_VIEWBOX.w / 2, SVG_VIEWBOX.h / 2, RADIUS, startAngle);
+  const end = polarToCartesian(SVG_VIEWBOX.w / 2, SVG_VIEWBOX.h / 2, RADIUS, endAngle);
   const largeArc = endAngle - startAngle > 180 ? 1 : 0;
 
   // Calculate the partial end point based on progress
   const actualEndAngle = startAngle + (endAngle - startAngle) * progress;
-  const actualEnd = polarToCartesian(100, 100, RADIUS, actualEndAngle);
+  const actualEnd = polarToCartesian(SVG_VIEWBOX.w / 2, SVG_VIEWBOX.h / 2, RADIUS, actualEndAngle);
   const actualLargeArc = actualEndAngle - startAngle > 180 ? 1 : 0;
 
   return (
@@ -120,7 +129,7 @@ export default function SegmentedTimer() {
   return (
     <div className="timer-container">
       <div className="ring-wrapper">
-        <svg className="progress-ring" viewBox="0 0 200 200">
+        <svg viewBox={`0 0 ${SVG_VIEWBOX.w} ${SVG_VIEWBOX.h}`}>
           {SEGMENT_PROPORTIONS.map((proportion, i) => {
             const startAngle = getCumulativeAngle(i) - 90; // Start from top
             const endAngle = startAngle + segmentAngles[i];
