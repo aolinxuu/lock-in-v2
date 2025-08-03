@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+
 import "./App.css";
 
 import {
@@ -7,7 +8,10 @@ import {
   STROKE_WIDTH,
   GAP_ANGLE,
   BASE_COLOR,
-  OVERLAY_COLOR,
+  OVERLAY_COLOR_1,
+  OVERLAY_COLOR_2,
+  OVERLAY_COLOR_3,
+  OVERLAY_COLOR_4,
   SEGMENTS,
   SVG_VIEWBOX,
 } from "./constants";
@@ -25,24 +29,41 @@ const Segment = ({ startAngle, endAngle, progress, i }) => {
   const actualLargeArc = actualEndAngle - startAngle > 180 ? 1 : 0;
 
   return (
-    <g key={i}>
-      <path
-        d={`M ${start.x} ${start.y} A ${RADIUS} ${RADIUS} 0 ${largeArc} 1 ${end.x} ${end.y}`}
-        fill="none"
-        stroke={BASE_COLOR}
-        strokeWidth={STROKE_WIDTH}
-        strokeLinecap="round"
-      />
-      {progress > 0 && (
+    <svg>
+      <defs>
+        {/* <linearGradient id="baseGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#7EA0FC" />
+          <stop offset="100%" stopColor="#11BA24" />
+        </linearGradient> */}
+        <linearGradient id="overlayGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor={OVERLAY_COLOR_1} />
+          <stop offset="40%" stopColor={OVERLAY_COLOR_2} />
+          <stop offset="70%" stopColor={OVERLAY_COLOR_3} />
+          <stop offset="100%" stopColor={OVERLAY_COLOR_4} />
+        </linearGradient>
+      </defs>
+      <g key={i}>
         <path
-          d={`M ${start.x} ${start.y} A ${RADIUS} ${RADIUS} 0 ${actualLargeArc} 1 ${actualEnd.x} ${actualEnd.y}`}
+          d={`M ${start.x} ${start.y} A ${RADIUS} ${RADIUS} 0 ${largeArc} 1 ${end.x} ${end.y}`}
           fill="none"
-          stroke={OVERLAY_COLOR}
+          stroke={BASE_COLOR}
+          strokeOpacity={0.5}
+          // stroke="url(#baseGradient)"
           strokeWidth={STROKE_WIDTH}
           strokeLinecap="round"
         />
-      )}
-    </g>
+        {progress > 0 && (
+          <path
+            d={`M ${start.x} ${start.y} A ${RADIUS} ${RADIUS} 0 ${actualLargeArc} 1 ${actualEnd.x} ${actualEnd.y}`}
+            fill="none"
+            // stroke={OVERLAY_COLOR}
+            stroke="url(#overlayGradient)"
+            strokeWidth={STROKE_WIDTH}
+            strokeLinecap="round"
+          />
+        )}
+      </g>
+    </svg>
   );
 };
 
@@ -127,59 +148,40 @@ export default function SegmentedTimer() {
   };
 
   return (
-    <div className="timer-container">
-      <div className="ring-wrapper">
-        <svg viewBox={`0 0 ${SVG_VIEWBOX.w} ${SVG_VIEWBOX.h}`}>
-          {SEGMENT_PROPORTIONS.map((proportion, i) => {
-            const startAngle = getCumulativeAngle(i) - 90; // Start from top
-            const endAngle = startAngle + segmentAngles[i];
-            const segmentProgress = getSegmentProgress(i);
-            return <Segment key={i} i={i} startAngle={startAngle} endAngle={endAngle} progress={segmentProgress} />;
-          })}
-        </svg>
-        <div className="timer-wrapper">
-          <div className="preview-text">Preview</div>
-          <div className="timer-text">{formatTime(remainingSeconds)}</div>
-          {remainingSeconds === 0 && (
-            <div className="progress-indicator">
-              <div className="done-badge">Done!</div>
-            </div>
-          )}
+    <div className="fullscreen-center">
+      <div className="timer-container">
+        <div className="timer-container-ring">
+          <svg viewBox={`0 0 ${SVG_VIEWBOX.w} ${SVG_VIEWBOX.h}`}>
+            {SEGMENT_PROPORTIONS.map((proportion, i) => {
+              const startAngle = getCumulativeAngle(i) - 90; // Start from top
+              const endAngle = startAngle + segmentAngles[i];
+              const segmentProgress = getSegmentProgress(i);
+              return <Segment key={i} i={i} startAngle={startAngle} endAngle={endAngle} progress={segmentProgress} />;
+            })}
+          </svg>
+          <div className="timer-container-text">
+            <div className="preview-text">Preview</div>
+            <div className="timer-text">{formatTime(remainingSeconds)}</div>
+            {remainingSeconds === 0 && (
+              <div className="progress-indicator">
+                <div className="done-badge">Done!</div>
+              </div>
+            )}
+          </div>
+          {/* Controls */}
+        </div>
+        <div className="controls">
+          <button onClick={startTimer} disabled={isRunning || remainingSeconds === 0} className="control-button start">
+            Start
+          </button>
+          <button onClick={pauseTimer} disabled={!isRunning} className="control-button pause">
+            Pause
+          </button>
+          <button onClick={resetTimer} className="control-button reset">
+            Reset
+          </button>
         </div>
       </div>
-      {/* </div> */}
-
-      {/* Controls
-      <div className="controls">
-        <button onClick={startTimer} disabled={isRunning || remainingSeconds === 0} className="control-button start">
-          Start
-        </button>
-        <button onClick={pauseTimer} disabled={!isRunning} className="control-button pause">
-          Pause
-        </button>
-        <button onClick={resetTimer} className="control-button reset">
-          Reset
-        </button>
-      </div> */}
-
-      {/* Timer setup
-      <div className="timer-setup">
-        <label htmlFor="minutes" className="timer-setup-label">
-          Total time:
-        </label>
-        <input
-          id="minutes"
-          type="number"
-          min="1"
-          max="60"
-          value={0.1}
-          onChange={(e) => setInputMinutes(parseInt(e.target.value) || 1)}
-          className="timer-input"
-        />
-        <button onClick={setNewTimer} disabled={isRunning} className="set-button">
-          Set
-        </button>
-      </div> */}
     </div>
   );
 }
