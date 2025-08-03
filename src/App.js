@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import "./App.css";
 
 import { SEGMENT_PROPORTIONS, RADIUS, STROKE_WIDTH, GAP_ANGLE, BASE_COLOR, OVERLAY_COLOR, SEGMENTS } from "./constants";
 
@@ -117,59 +118,44 @@ export default function SegmentedTimer() {
   };
 
   return (
-    <div className="flex flex-col items-center gap-6 p-8">
-      <div className="relative">
-        <svg width="200" height="200">
-          {/* <svg viewBox={`${SVG_VIEWBOX.x} ${SVG_VIEWBOX.y} ${SVG_VIEWBOX.w} ${SVG_VIEWBOX.h}`} className="w-64 h-64"> */}
+    <div className="timer-container">
+      <div className="ring-wrapper">
+        <svg className="progress-ring" viewBox="0 0 200 200">
           {SEGMENT_PROPORTIONS.map((proportion, i) => {
             const startAngle = getCumulativeAngle(i) - 90; // Start from top
             const endAngle = startAngle + segmentAngles[i];
             const segmentProgress = getSegmentProgress(i);
             return <Segment key={i} i={i} startAngle={startAngle} endAngle={endAngle} progress={segmentProgress} />;
           })}
-          <text x="100" y="110" textAnchor="middle" fontSize="22" fill="#000" fontFamily="monospace">
-            {formatTime(remainingSeconds)}
-          </text>
         </svg>
-
-        {/* Progress indicator */}
-        {remainingSeconds === 0 && (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-semibold">Done!</div>
-          </div>
-        )}
-        {/*State management - preview, deep focus, overview, break */}
-        <div className="absolute top-12 left-0 right-0 flex flex-col items-center justify-center">
-          <label htmlFor="minutes" className="text-sm font-medium">
-            Preview
-          </label>
+        <div className="timer-wrapper">
+          <div className="preview-text">Preview</div>
+          <div className="timer-text">{formatTime(remainingSeconds)}</div>
+          {remainingSeconds === 0 && (
+            <div className="progress-indicator">
+              <div className="done-badge">Done!</div>
+            </div>
+          )}
         </div>
       </div>
+      {/* </div> */}
 
-      {/* Controls */}
-      <div className="flex gap-3">
-        <button
-          onClick={startTimer}
-          disabled={isRunning || remainingSeconds === 0}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
-        >
+      {/* Controls
+      <div className="controls">
+        <button onClick={startTimer} disabled={isRunning || remainingSeconds === 0} className="control-button start">
           Start
         </button>
-        <button
-          onClick={pauseTimer}
-          disabled={!isRunning}
-          className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
-        >
+        <button onClick={pauseTimer} disabled={!isRunning} className="control-button pause">
           Pause
         </button>
-        <button onClick={resetTimer} className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
+        <button onClick={resetTimer} className="control-button reset">
           Reset
         </button>
-      </div>
+      </div> */}
 
-      {/* Timer setup */}
-      <div className="flex items-center gap-2">
-        <label htmlFor="minutes" className="text-sm font-medium">
+      {/* Timer setup
+      <div className="timer-setup">
+        <label htmlFor="minutes" className="timer-setup-label">
           Total time:
         </label>
         <input
@@ -179,16 +165,12 @@ export default function SegmentedTimer() {
           max="60"
           value={0.1}
           onChange={(e) => setInputMinutes(parseInt(e.target.value) || 1)}
-          className="w-16 px-2 py-1 border border-gray-300 rounded text-center"
+          className="timer-input"
         />
-        <button
-          onClick={setNewTimer}
-          disabled={isRunning}
-          className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-sm"
-        >
+        <button onClick={setNewTimer} disabled={isRunning} className="set-button">
           Set
         </button>
-      </div>
+      </div> */}
     </div>
   );
 }
