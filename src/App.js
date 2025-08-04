@@ -70,8 +70,9 @@ const Segment = ({ startAngle, endAngle, progress, i }) => {
 };
 
 export default function SegmentedTimer() {
-  const [totalSeconds, setTotalSeconds] = useState(300); // 5 minutes default
-  const [remainingSeconds, setRemainingSeconds] = useState(300);
+  const totalTime = 60;
+  const [totalSeconds, setTotalSeconds] = useState(totalTime); // 5 minutes default
+  const [remainingSeconds, setRemainingSeconds] = useState(totalTime);
   const [isRunning, setIsRunning] = useState(false);
   const [inputMinutes, setInputMinutes] = useState(5);
   const intervalRef = useRef(null);
@@ -162,13 +163,34 @@ export default function SegmentedTimer() {
             })}
           </svg>
           <div className="timer-container-text">
-            <div className="preview-text">Preview</div>
+            {(() => {
+              const fivePercent = Math.round((5 / 60) * totalTime);
+              const fortyPercent = Math.round((40 / 60) * totalTime);
+              const tenPercent = Math.round((10 / 60) * totalTime);
+
+              let message = null;
+
+              // Show each message for a range of time
+              if (remainingSeconds <= totalTime && remainingSeconds > fortyPercent) {
+                message = "Preview";
+              } else if (remainingSeconds <= fivePercent && remainingSeconds > 0) {
+                message = "Focus";
+              } else if (remainingSeconds <= tenPercent && remainingSeconds > fivePercent) {
+                message = "Overview";
+              } else if (remainingSeconds <= fortyPercent && remainingSeconds > tenPercent) {
+                message = "Break";
+              } else if (remainingSeconds === 0) {
+                message = "Done 🎉";
+              }
+
+              return message ? (
+                <div className="progress-text">
+                  <div className="progress-text">{message}</div>
+                </div>
+              ) : null;
+            })()}
+            {/* <div className="preview-text">Preview</div> */}
             <div className="timer-text">{formatTime(remainingSeconds)}</div>
-            {remainingSeconds === 0 && (
-              <div className="progress-indicator">
-                <div className="done-badge">Done!</div>
-              </div>
-            )}
           </div>
           {/* Controls */}
         </div>
@@ -187,3 +209,16 @@ export default function SegmentedTimer() {
     </div>
   );
 }
+
+// {[(5 / 60) * startTimer, (40 / 60) * startTimer, (5 / 60) * startTimer, (10 / 60) * startTimer, 0].includes(
+//   remainingSeconds
+// ) && (
+//   <div className="milestone-alert">
+//   <div className="preview-text">
+//     {remainingSeconds === (5 / 60) * startTimer && "Halfway there! 🎯"}
+//     {remainingSeconds === (40 / 60) * startTimer && "30 seconds left! ⏰"}
+//     {remainingSeconds === (5 / 60) * startTimer && "Final countdown! 🚨"}
+//     {remainingSeconds === (10 / 60) * startTimer && "Final countdown! 🚨"}
+//     {remainingSeconds === 0 && "Done! 🎉"}
+//   </div>
+// </div>
