@@ -1,123 +1,3 @@
-/* .App {
-  text-align: center;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.fullscreen-center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-
-.timer-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  min-height: fit-content;
-}
-
-.timer-container-ring {
-  position: relative;
-  width: 600px;
-  height: 600px;
-}
-
-.timer-container-text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-size: 10rem;
-}
-
-.preview-text {
-  font-size: 0.25em;
-  fill: #000;
-  font-family: "Roboto", sans-serif;
-  font-weight: 110;
-}
-
-.timer-text {
-  font-size: 0.8em;
-  fill: #000;
-  font-family: "Roboto", sans-serif;
-  font-weight: 110;
-}
-
-.progress-indicator {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.controls {
-  display: flex;
-  margin-top: 3.5rem;
-  gap: 1.5rem;
-  justify-content: center;
-}
-
-.control-button {
-  padding: 0.7rem 1.5rem;
-  border-radius: 1rem;
-  font-weight: 500;
-  font-family: "Roboto", sans-serif;
-  font-weight: 110;
-  font-size: 1.5rem;
-  transition: background-color 0.2s;
-  cursor: pointer;
-  border: none;
-}
-
-.control-button:disabled {
-  cursor: not-allowed;
-}
-
-.control-button.start {
-  background-color: #3b82f6;
-  color: white;
-}
-
-.control-button.start:hover:not(:disabled) {
-  background-color: #2563eb;
-}
-
-.control-button.start:disabled {
-  background-color: #d1d5db;
-}
-
-.control-button.pause {
-  background-color: #eab308;
-  color: white;
-}
-
-.control-button.pause:hover:not(:disabled) {
-  background-color: #ca8a04;
-}
-
-.control-button.pause:disabled {
-  background-color: #d1d5db;
-}
-
-.control-button.reset {
-  background-color: #6b7280;
-  color: white;
-}
-
-.control-button.reset:hover {
-  background-color: #4b5563;
-} */
-
 .App {
   text-align: center;
   min-height: 100vh;
@@ -134,31 +14,33 @@
   align-items: center;
   height: 100vh;
   position: relative;
-  background-color: #6866ea;
+  background: radial-gradient(
+    circle at 70% -10%,
+    #ffc480,
+    #dcc474,
+    #b8c26f,
+    #93be70,
+    #6fb673,
+    #4bac78,
+    #299e7b,
+    #078f7d
+  );
 }
 
-/* Timer Container with glassmorphism */
 .timer-container {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   min-height: fit-content;
-  /* Add glassmorphic effect to main container */
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 40px;
+  /* glassmorphic effect */
   padding: 3rem;
-  box-shadow: 0 20px 60px 0 rgba(31, 38, 135, 0.3);
-  transition: all 0.3s ease;
-}
-
-.timer-container:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 25px 80px 0 rgba(31, 38, 135, 0.4);
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.09);
+  border-radius: 40px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(15.1px);
+  -webkit-backdrop-filter: blur(15.1px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .timer-container-ring {
@@ -182,16 +64,18 @@
 
 .preview-text {
   font-size: 0.25em;
-  fill: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.972);
+  /* fill: rgba(255, 255, 255, 0.9); */
   font-family: "Roboto", sans-serif;
-  font-weight: 300;
+  font-weight: 110;
 }
 
 .timer-text {
-  font-size: 0.8em;
-  fill: rgba(255, 255, 255, 0.95);
+  font-size: 0.7em;
+  color: rgba(255, 255, 255, 0.972);
+  /* fill: rgba(255, 255, 255, 0.95); */
   font-family: "Roboto", sans-serif;
-  font-weight: 300;
+  font-weight: 110;
 }
 
 .progress-indicator {
@@ -218,10 +102,10 @@
   font-size: 1.5rem;
   transition: all 0.3s ease;
   cursor: pointer;
-  border: none;
+  /* border: none; */
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  /* border: 1px solid rgba(255, 255, 255, 0.2); */
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
   position: relative;
   overflow: hidden;

@@ -12,7 +12,8 @@ export const RADIUS = 90;
 // export const OVERLAY_COLOR = "#F59E0B";
 
 // export const BASE_COLOR = "linear-gradient(to right, #93CDAC, #A8E6CF)";
-export const BASE_COLOR = "#93CDAC";
+export const BASE_COLOR = "#078f7d";
+export const OVERLAY_COLOR = "#078f7d";
 export const OVERLAY_COLOR_1 = "#B0B3E9";
 export const OVERLAY_COLOR_2 = "#A9BDD9";
 export const OVERLAY_COLOR_3 = "#A3D2CA";

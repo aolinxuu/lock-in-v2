@@ -8,6 +8,7 @@ import {
   STROKE_WIDTH,
   GAP_ANGLE,
   BASE_COLOR,
+  OVERLAY_COLOR,
   OVERLAY_COLOR_1,
   OVERLAY_COLOR_2,
   OVERLAY_COLOR_3,
@@ -47,7 +48,7 @@ const Segment = ({ startAngle, endAngle, progress, i }) => {
           d={`M ${start.x} ${start.y} A ${RADIUS} ${RADIUS} 0 ${largeArc} 1 ${end.x} ${end.y}`}
           fill="none"
           stroke={BASE_COLOR}
-          strokeOpacity={0.5}
+          strokeOpacity={0.4}
           // stroke="url(#baseGradient)"
           strokeWidth={STROKE_WIDTH}
           strokeLinecap="round"
@@ -56,8 +57,9 @@ const Segment = ({ startAngle, endAngle, progress, i }) => {
           <path
             d={`M ${start.x} ${start.y} A ${RADIUS} ${RADIUS} 0 ${actualLargeArc} 1 ${actualEnd.x} ${actualEnd.y}`}
             fill="none"
-            // stroke={OVERLAY_COLOR}
-            stroke="url(#overlayGradient)"
+            stroke={OVERLAY_COLOR}
+            strokeOpacity={0.9}
+            // stroke="url(#overlayGradient)"
             strokeWidth={STROKE_WIDTH}
             strokeLinecap="round"
           />
