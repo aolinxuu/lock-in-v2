@@ -147,9 +147,11 @@ export default function SegmentedTimer() {
     setIsRunning(false);
   };
 
+  const isElectron = window.navigator.userAgent.includes("Electron");
+
   return (
     <div className="fullscreen-center">
-      <div className="timer-container">
+      <div className={`timer-container ${isElectron ? "electron-mode" : ""}`}>
         <div className="timer-container-ring">
           <svg viewBox={`0 0 ${SVG_VIEWBOX.w} ${SVG_VIEWBOX.h}`}>
             {SEGMENT_PROPORTIONS.map((proportion, i) => {
