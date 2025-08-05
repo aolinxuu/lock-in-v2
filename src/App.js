@@ -164,20 +164,21 @@ export default function SegmentedTimer() {
           </svg>
           <div className="timer-container-text">
             {(() => {
-              const fivePercent = Math.round((5 / 60) * totalTime);
-              const fortyPercent = Math.round((40 / 60) * totalTime);
+              const fiftyFivePercent = Math.round((55 / 60) * totalTime);
+              const fifteenPercent = Math.round((15 / 60) * totalTime);
               const tenPercent = Math.round((10 / 60) * totalTime);
+              const fivePercent = Math.round((5 / 60) * totalTime);
 
               let message = null;
 
               // Show each message for a range of time
-              if (remainingSeconds <= totalTime && remainingSeconds > fortyPercent) {
+              if (remainingSeconds <= totalTime && remainingSeconds >= fiftyFivePercent) {
                 message = "Preview";
-              } else if (remainingSeconds <= fivePercent && remainingSeconds > 0) {
+              } else if (remainingSeconds < fiftyFivePercent && remainingSeconds >= fifteenPercent) {
                 message = "Focus";
-              } else if (remainingSeconds <= tenPercent && remainingSeconds > fivePercent) {
+              } else if (remainingSeconds < fifteenPercent && remainingSeconds >= tenPercent) {
                 message = "Overview";
-              } else if (remainingSeconds <= fortyPercent && remainingSeconds > tenPercent) {
+              } else if (remainingSeconds < tenPercent && remainingSeconds > 0) {
                 message = "Break";
               } else if (remainingSeconds === 0) {
                 message = "Done 🎉";
